@@ -342,12 +342,12 @@
     </div>
     <div id="analysisView">
         <div class="input-group">
-            <label>Ürün Alış Fiyatı</label>
+            <label>Steam Alış Fiyatı</label>
             <input type="number" id="faAlis" placeholder="0.00" step="any" oninput="hesaplaFiyatAnalizi()">
         </div>
         
         <div class="input-group">
-            <label>Ürün Satış Fiyatı</label>
+            <label>CSFloat Satış Fiyatı</label>
             <input type="number" id="faSatis" placeholder="0.00" step="any" oninput="hesaplaFiyatAnalizi()">
         </div>
 
@@ -355,7 +355,7 @@
             <div class="analysis-card">
                 <div class="analysis-row">
                     <span class="analysis-label">Kesinti:</span>
-                    <span class="analysis-value" id="faKesinti" style="color: #ff3b30;">-0.00 TL</span>
+                    <span class="analysis-value" id="faKesinti" style="color: #ff3b30;">-0.00 </span>
                 </div>
                 <div class="analysis-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color);">
                     <span class="analysis-label">Net Satış Fiyatı:</span>
@@ -365,7 +365,7 @@
 
             <div id="faResultBox" class="main-result-box">
                 <div id="faResultTitle" class="main-result-title">KÂR</div>
-                <div id="faResultVal" class="main-result-value">+0.00 TL</div>
+                <div id="faResultVal" class="main-result-value">+0.00 </div>
                 <div id="faResultPercent" class="main-result-percent">+0.00%</div>
             </div>
         </div>
@@ -382,12 +382,12 @@
         </div>
         
         <div class="input-group">
-            <label>Ürün Alış Fiyatı </label>
+            <label>CSFloat Alış Fiyatı </label>
             <input type="number" id="alis" value="5">
         </div>
         
         <div class="input-group">
-            <label>Ürün Satış Fiyatı </label>
+            <label>Steam Satış Fiyatı </label>
             <input type="number" id="satis" value="9">
         </div>
         
@@ -416,17 +416,17 @@
             <div class="analysis-card">
                 <div class="analysis-row">
                     <span class="analysis-label">Steam Kesintisi:</span>
-                    <span class="analysis-value" id="steamKesinti" style="color: #ff3b30;">0.00 TL</span>
+                    <span class="analysis-value" id="steamKesinti" style="color: #ff3b30;">0.00 </span>
                 </div>
                 <div class="analysis-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color);">
                     <span class="analysis-label">Hesaba Geçecek:</span>
-                    <span class="analysis-value" id="steamNetSatis">0.00 TL</span>
+                    <span class="analysis-value" id="steamNetSatis">0.00 </span>
                 </div>
             </div>
 
             <div id="steamResultBox" class="main-result-box">
                 <div id="steamResultTitle" class="main-result-title">KÂR</div>
-                <div id="steamResultVal" class="main-result-value">+0.00 TL</div>
+                <div id="steamResultVal" class="main-result-value">+0.00 </div>
                 <div id="steamResultPercent" class="main-result-percent">+0.00%</div>
             </div>
         </div>
@@ -502,8 +502,8 @@
         const netSatis = satis - kesinti;
         const fark = netSatis - alis;
         const yuzde = (fark / alis) * 100;
-        document.getElementById('faKesinti').innerText = "-" + kesinti.toFixed(2) + " TL";
-        document.getElementById('faNetSatis').innerText = netSatis.toFixed(2) + " TL";
+        document.getElementById('faKesinti').innerText = "-" + kesinti.toFixed(2) + " ";
+        document.getElementById('faNetSatis').innerText = netSatis.toFixed(2) + " ";
         const resBox = document.getElementById('faResultBox');
         const resTitle = document.getElementById('faResultTitle');
         const resVal = document.getElementById('faResultVal');
@@ -512,7 +512,7 @@
             resBox.className = "main-result-box res-success";
             resTitle.innerText = "KÂR";
             resTitle.style.color = "#34c759";
-            resVal.innerText = "+" + fark.toFixed(2) + " TL";
+            resVal.innerText = "+" + fark.toFixed(2) + " ";
             resVal.style.color = "#34c759";
             resPercent.innerText = "+" + yuzde.toFixed(2) + "%";
             resPercent.style.color = "#34c759";
@@ -520,7 +520,7 @@
             resBox.className = "main-result-box res-danger";
             resTitle.innerText = "ZARAR";
             resTitle.style.color = "#ff3b30";
-            resVal.innerText = fark.toFixed(2) + " TL";
+            resVal.innerText = fark.toFixed(2) + " ";
             resVal.style.color = "#ff3b30";
             resPercent.innerText = yuzde.toFixed(2) + "%";
             resPercent.style.color = "#ff3b30";
@@ -571,8 +571,8 @@
         const hesabaGecen = calculateSteamRecv(satis);
         const kesinti = satis - hesabaGecen;
 
-        document.getElementById('steamKesinti').innerText = kesinti.toFixed(2) + " TL";
-        document.getElementById('steamNetSatis').innerText = hesabaGecen.toFixed(2) + " TL";
+        document.getElementById('steamKesinti').innerText = kesinti.toFixed(2) + " ";
+        document.getElementById('steamNetSatis').innerText = hesabaGecen.toFixed(2) + " ";
 
         const resBox = document.getElementById('steamResultBox');
         const resTitle = document.getElementById('steamResultTitle');
@@ -585,7 +585,7 @@
                 resBox.className = "main-result-box res-success";
                 resTitle.innerText = "KÂR";
                 resTitle.style.color = "#34c759";
-                resVal.innerText = "+" + netSonuc.toFixed(2) + " TL";
+                resVal.innerText = "+" + netSonuc.toFixed(2) + " ";
                 resVal.style.color = "#34c759";
                 
                 if (alis > 0) {
@@ -599,7 +599,7 @@
                 resBox.className = "main-result-box res-danger";
                 resTitle.innerText = "ZARAR";
                 resTitle.style.color = "#ff3b30";
-                resVal.innerText = netSonuc.toFixed(2) + " TL";
+                resVal.innerText = netSonuc.toFixed(2) + " ";
                 resVal.style.color = "#ff3b30";
                 
                 if (alis > 0) {
@@ -647,17 +647,17 @@
         const toplamKazanc = (urunAdedi * satis) + artanPara;
         const netKar = toplamKazanc - para;
 
-        document.getElementById('resKalan').innerText = "📉 Kalan Para: " + kalan.toFixed(2) + " TL";
+        document.getElementById('resKalan').innerText = "📉 Kalan Para: " + kalan.toFixed(2) + " ";
         document.getElementById('resUrun').innerText = "📦 Alınan Ürün: " + urunAdedi + " adet";
-        document.getElementById('resToplam').innerText = "💰 Son Toplam Para: " + toplamKazanc.toFixed(2) + " TL";
+        document.getElementById('resToplam').innerText = "💰 Son Toplam Para: " + toplamKazanc.toFixed(2) + " ";
         
         const netElem = document.getElementById('resNet');
         if (netKar >= 0) {
             netElem.className = "success";
-            netElem.innerText = "📈 Net Kâr: +" + netKar.toFixed(2) + " TL";
+            netElem.innerText = "📈 Net Kâr: +" + netKar.toFixed(2) + " ";
         } else {
             netElem.className = "danger";
-            netElem.innerText = "📉 Net Zarar: " + netKar.toFixed(2) + " TL";
+            netElem.innerText = "📉 Net Zarar: " + netKar.toFixed(2) + " ";
         }
 
         document.getElementById('resultBox').style.display = "block";
@@ -690,10 +690,10 @@
             const sign = isProfit ? "+" : "";
             return `
                 <div class="history-card ${cardClass}">
-                    <div class="history-date">${h.date} - Sermaye: ${h.para}TL (%${h.zarar} Zarar)</div>
+                    <div class="history-date">${h.date} - Sermaye: ${h.para} (%${h.zarar} Zarar)</div>
                     <div class="history-details">
-                        <span>Alış/Satış: ${h.alis}/${h.satis}TL</span>
-                        <span>Net: ${sign}${h.netKar} TL</span>
+                        <span>Alış/Satış: ${h.alis}/${h.satis}</span>
+                        <span>Net: ${sign}${h.netKar} </span>
                     </div>
                 </div>
             `;
