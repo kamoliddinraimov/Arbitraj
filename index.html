@@ -3,57 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <!-- iOS Tam Ekran (PWA) Ayarları -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Hesaplayıcı">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/calculator--v1.png">
+    
     <title>Zarar & Kâr Simülatörü</title>
+    
     <style>
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #f2f2f7; margin: 0; padding: 20px; color: #1c1c1e; display: flex; justify-content: center; }
-        .container { background: white; padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        h2 { text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 22px; }
+        :root {
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-color: #1c1c1e;
+            --sub-text: #3a3a3c;
+            --border-color: #c7c7cc;
+            --input-bg: #fafafa;
+            --result-bg: #f8f9fa;
+            --result-border: #e5e5ea;
+            --drawer-bg: #ffffff;
+            --overlay-bg: rgba(0, 0, 0, 0.4);
+            --history-card-bg: #f2f2f7;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --card-bg: #1c1c1e;
+            --text-color: #f2f2f7;
+            --sub-text: #aeaeb2;
+            --border-color: #38383a;
+            --input-bg: #2c2c2e;
+            --result-bg: #2c2c2e;
+            --result-border: #38383a;
+            --drawer-bg: #1c1c1e;
+            --overlay-bg: rgba(0, 0, 0, 0.7);
+            --history-card-bg: #2c2c2e;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            margin: 0; 
+            padding: 20px; 
+            color: var(--text-color); 
+            display: flex; 
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container { 
+            background: var(--card-bg); 
+            padding: 24px; 
+            border-radius: 16px; 
+            width: 100%; 
+            max-width: 400px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+            position: relative;
+            margin-top: 10px;
+        }
+
+        /* Menü Butonu */
+        .menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            width: auto;
+            margin: 0;
+        }
+
+        h2 { text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 20px; padding-right: 30px; }
         .input-group { margin-bottom: 16px; }
-        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #3a3a3c; }
-        input { width: 100%; padding: 12px; border: 1px solid #c7c7cc; border-radius: 10px; font-size: 16px; outline: none; background: #fafafa; }
-        input:focus { border-color: #007aff; background: #fff; }
-        button { width: 100%; padding: 14px; background-color: #007aff; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-        button:active { background-color: #0056b3; }
-        .result { margin-top: 20px; padding: 16px; border-radius: 10px; background: #f8f9fa; border: 1px solid #e5e5ea; display: none; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--sub-text); }
+        
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            font-size: 16px; 
+            outline: none; 
+            background: var(--input-bg); 
+            color: var(--text-color);
+        }
+        input:focus { border-color: #007aff; }
+
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background-color: #007aff; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 10px; 
+        }
+        button:active { opacity: 0.8; }
+
+        .result { 
+            margin-top: 20px; 
+            padding: 16px; 
+            border-radius: 10px; 
+            background: var(--result-bg); 
+            border: 1px solid var(--result-border); 
+            display: none; 
+        }
         .result p { margin: 8px 0; font-size: 15px; }
         .success { color: #34c759; font-weight: bold; }
         .danger { color: #ff3b30; font-weight: bold; }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--overlay-bg);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 99;
+        }
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Yan Menü (Drawer) */
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -85%;
+            width: 80%;
+            max-width: 340px;
+            height: 100vh;
+            background: var(--drawer-bg);
+            z-index: 100;
+            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+            overflow-y: auto;
+        }
+        .drawer.active {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .drawer-header h3 { margin: 0; font-size: 18px; }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            margin: 0;
+        }
+
+        /* Toggle Switch */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            background: var(--history-card-bg);
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .theme-switch-label {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e9e9ea;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider { background-color: #34c759; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Son İşlemler Geçmişi */
+        .history-section { flex: 1; }
+        .history-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .history-title-row h4 { margin: 0; font-size: 15px; }
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #ff3b30;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            margin: 0;
+        }
+        .history-list { display: flex; flex-direction: column; gap: 10px; }
+        .history-card {
+            background: var(--history-card-bg);
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            border-left: 4px solid #007aff;
+        }
+        .history-card.card-success { border-left-color: #34c759; }
+        .history-card.card-danger { border-left-color: #ff3b30; }
+        .history-date { font-size: 11px; color: var(--sub-text); margin-bottom: 4px; }
+        .history-details { display: flex; justify-content: space-between; font-weight: 500; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h2>📊 Arbitraj Simülatörü</h2>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <h2>📊 Zarar & Kâr Simülatörü</h2>
+    
     <div class="input-group">
         <label>Başlangıç Parası (TL)</label>
         <input type="number" id="para" value="100">
     </div>
+    
     <div class="input-group">
         <label>Zarar Oranı (%)</label>
         <input type="number" id="zarar" value="30">
     </div>
+    
     <div class="input-group">
         <label>Ürün Alış Fiyatı (TL)</label>
         <input type="number" id="alis" value="5">
     </div>
+    
     <div class="input-group">
         <label>Ürün Satış Fiyatı (TL)</label>
         <input type="number" id="satis" value="9">
     </div>
+    
     <button onclick="hesapla()">Hesapla</button>
+    
     <div id="resultBox" class="result">
         <p id="resKalan"></p>
         <p id="resUrun"></p>
         <p id="resToplam"></p>
-        <hr style="border:0; border-top:1px solid #e5e5ea; margin: 10px 0;">
+        <hr style="border:0; border-top:1px solid var(--result-border); margin: 10px 0;">
         <p id="resNet"></p>
     </div>
 </div>
+
+<!-- Overlay & Yan Menü -->
+<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+<div id="drawer" class="drawer">
+    <div class="drawer-header">
+        <h3>Aarlar & Geçmiş</h3>
+        <button class="close-btn" onclick="toggleMenu()">✕</button>
+    </div>
+
+    <!-- Dark Mode Switch -->
+    <div class="theme-switch-wrapper">
+        <span class="theme-switch-label">Koyu Tema</span>
+        <label class="switch">
+            <input type="checkbox" id="themeToggle" onchange="switchTheme(this.checked)">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <!-- Son 10 İşlem -->
+    <div class="history-section">
+        <div class="history-title-row">
+            <h4>Son 10 İşlem</h4>
+            <button class="clear-btn" onclick="clearHistory()">Temizle</button>
+        </div>
+        <div id="historyList" class="history-list">
+            <!-- Geçmiş verileri buraya yüklenecek -->
+        </div>
+    </div>
+</div>
+
 <script>
+    // Sayfa Yüklendiğinde Ayarları Getir
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("appTheme") || "light";
+        if (savedTheme === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+            document.getElementById("themeToggle").checked = true;
+        }
+        renderHistory();
+    });
+
+    // Menü Aç/Kapat
+    function toggleMenu() {
+        document.getElementById("drawer").classList.toggle("active");
+        document.getElementById("overlay").classList.toggle("active");
+    }
+
+    // Tema Değiştirme
+    function switchTheme(isDark) {
+        if (isDark) {
+            document.documentElement.setAttribute("data-theme", "dark");
+            localStorage.setItem("appTheme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+            localStorage.setItem("appTheme", "light");
+        }
+    }
+
+    // Mevcut Hesaplama Fonksiyonu (Mantık %100 Korundu)
     function hesapla() {
         const para = parseFloat(document.getElementById('para').value) || 0;
         const zarar = parseFloat(document.getElementById('zarar').value) || 0;
@@ -85,8 +390,57 @@
         }
 
         document.getElementById('resultBox').style.display = "block";
+
+        // Geçmişe Kaydet
+        saveToHistory({
+            para, zarar, alis, satis,
+            toplamKazanc: toplamKazanc.toFixed(2),
+            netKar: netKar.toFixed(2),
+            date: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+        });
+    }
+
+    // Geçmişe Kaydetme Fonksiyonu
+    function saveToHistory(item) {
+        let history = JSON.parse(localStorage.getItem("calcHistory")) || [];
+        history.unshift(item); // En başa ekle
+        if (history.length > 10) history = history.slice(0, 10); // Son 10 elemanı tut
+        localStorage.setItem("calcHistory", JSON.stringify(history));
+        renderHistory();
+    }
+
+    // Geçmişi Listeleme
+    function renderHistory() {
+        const historyList = document.getElementById("historyList");
+        const history = JSON.parse(localStorage.getItem("calcHistory")) || [];
+        
+        if (history.length === 0) {
+            historyList.innerHTML = `<p style="font-size:12px; color:var(--sub-text); text-align:center;">Henüz kayıtlı işlem yok.</p>`;
+            return;
+        }
+
+        historyList.innerHTML = history.map(h => {
+            const isProfit = parseFloat(h.netKar) >= 0;
+            const cardClass = isProfit ? "card-success" : "card-danger";
+            const sign = isProfit ? "+" : "";
+            return `
+                <div class="history-card ${cardClass}">
+                    <div class="history-date">${h.date} - Sermaye: ${h.para}TL (%${h.zarar} Zarar)</div>
+                    <div class="history-details">
+                        <span>Alış/Satış: ${h.alis}/${h.satis}TL</span>
+                        <span>Net: ${sign}${h.netKar} TL</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Geçmişi Temizle
+    function clearHistory() {
+        localStorage.removeItem("calcHistory");
+        renderHistory();
     }
 </script>
 
-</body>        
+</body>
 </html>
