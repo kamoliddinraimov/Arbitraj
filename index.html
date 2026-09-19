@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    
-    <!-- iOS Tam Ekran (PWA) Ayarları -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Hesaplayıcı">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/calculator--v1.png">
+    <meta name="apple-mobile-web-app-title" content="Arbitraj">
+    <link rel="apple-touch-icon" href="https://icons8.com/icon/YWVPoithDRl0/counter-strike">
     
-    <title>Zarar & Kâr Simülatörü</title>
+    <title>CS2 Arbitraj Simülatörü</title>
     
     <style>
         :root {
@@ -72,8 +70,6 @@
             position: relative;
             margin-top: 10px;
         }
-
-        /* Menü Butonu */
         .menu-btn {
             position: absolute;
             top: 20px;
@@ -91,8 +87,6 @@
         }
 
         h2 { text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 20px; padding-right: 30px; }
-
-        /* Mode Segmented Switch (iOS Style - 3 Opsiyonlu) */
         .mode-switch-container {
             display: flex;
             background-color: var(--switch-bg);
@@ -160,8 +154,6 @@
         .result p { margin: 8px 0; font-size: 15px; }
         .success { color: #34c759; font-weight: bold; }
         .danger { color: #ff3b30; font-weight: bold; }
-
-        /* Analiz & Steam Özel Kart Tasarımı */
         .analysis-card {
             background: var(--result-bg);
             border: 1px solid var(--result-border);
@@ -179,7 +171,6 @@
         .analysis-row:last-child { margin-bottom: 0; }
         .analysis-label { color: var(--sub-text); font-weight: 500; }
         .analysis-value { font-weight: 600; }
-        
         .main-result-box {
             margin-top: 16px;
             padding: 16px;
@@ -211,8 +202,6 @@
             font-size: 16px;
             font-weight: 700;
         }
-
-        /* Overlay */
         .overlay {
             position: fixed;
             top: 0;
@@ -229,8 +218,6 @@
             opacity: 1;
             visibility: visible;
         }
-
-        /* Yan Menü (Drawer) */
         .drawer {
             position: fixed;
             top: 0;
@@ -250,7 +237,6 @@
         .drawer.active {
             right: 0;
         }
-
         .drawer-header {
             display: flex;
             justify-content: space-between;
@@ -270,8 +256,6 @@
             width: auto;
             margin: 0;
         }
-
-        /* Toggle Switch */
         .theme-switch-wrapper {
             display: flex;
             align-items: center;
@@ -314,8 +298,6 @@
         }
         input:checked + .slider { background-color: #34c759; }
         input:checked + .slider:before { transform: translateX(22px); }
-
-        /* Son İşlemler Geçmişi */
         .history-section { flex: 1; }
         .history-title-row {
             display: flex;
@@ -352,24 +334,20 @@
 
 <div class="container">
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    <h2>📊 Ticaret Analizi</h2>
-    
-    <!-- Mode Switcher (Üçlü Yapı) -->
+    <h2> CS2 Arbitraj </h2>
     <div class="mode-switch-container">
-        <div id="modeAnalysis" class="mode-option active" onclick="switchMode('analysis')">Fiyat Analizi</div>
+        <div id="modeAnalysis" class="mode-option active" onclick="switchMode('analysis')">CSFloat</div>
         <div id="modeSimulator" class="mode-option" onclick="switchMode('simulator')">Simülatör</div>
         <div id="modeSteam" class="mode-option" onclick="switchMode('steam')">Steam</div>
     </div>
-
-    <!-- MOD 1: FİYAT ANALİZİ EKRANI -->
     <div id="analysisView">
         <div class="input-group">
-            <label>Ürün Alış Fiyatı (TL)</label>
+            <label>Ürün Alış Fiyatı</label>
             <input type="number" id="faAlis" placeholder="0.00" step="any" oninput="hesaplaFiyatAnalizi()">
         </div>
         
         <div class="input-group">
-            <label>Ürün Satış Fiyatı (TL)</label>
+            <label>Ürün Satış Fiyatı</label>
             <input type="number" id="faSatis" placeholder="0.00" step="any" oninput="hesaplaFiyatAnalizi()">
         </div>
 
@@ -381,7 +359,7 @@
                 </div>
                 <div class="analysis-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color);">
                     <span class="analysis-label">Net Satış Fiyatı:</span>
-                    <span class="analysis-value" id="faNetSatis">0.00 TL</span>
+                    <span class="analysis-value" id="faNetSatis">0.00 </span>
                 </div>
             </div>
 
@@ -392,11 +370,9 @@
             </div>
         </div>
     </div>
-
-    <!-- MOD 2: SİMÜLATÖR EKRANI -->
     <div id="simulatorView" style="display: none;">
         <div class="input-group">
-            <label>Başlangıç Parası (TL)</label>
+            <label>Ana Bakiye</label>
             <input type="number" id="para" value="100">
         </div>
         
@@ -406,12 +382,12 @@
         </div>
         
         <div class="input-group">
-            <label>Ürün Alış Fiyatı (TL)</label>
+            <label>Ürün Alış Fiyatı </label>
             <input type="number" id="alis" value="5">
         </div>
         
         <div class="input-group">
-            <label>Ürün Satış Fiyatı (TL)</label>
+            <label>Ürün Satış Fiyatı </label>
             <input type="number" id="satis" value="9">
         </div>
         
@@ -425,16 +401,14 @@
             <p id="resNet"></p>
         </div>
     </div>
-
-    <!-- MOD 3: STEAM EKRANI -->
     <div id="steamView" style="display: none;">
         <div class="input-group">
-            <label>Alış Fiyatım (TL)</label>
+            <label>CSFloat Alış Fiyatım</label>
             <input type="number" id="steamAlis" placeholder="0.00" step="any" oninput="hesaplaSteam()">
         </div>
         
         <div class="input-group">
-            <label>Satış Fiyatım (TL)</label>
+            <label>Steam Satış Fiyatım </label>
             <input type="number" id="steamSatis" placeholder="0.00" step="any" oninput="hesaplaSteam()">
         </div>
 
@@ -458,39 +432,30 @@
         </div>
     </div>
 </div>
-
-<!-- Overlay & Yan Menü -->
 <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
-
 <div id="drawer" class="drawer">
     <div class="drawer-header">
-        <h3>Ayarlar & Geçmiş</h3>
+        <h3>Geçmiş</h3>
         <button class="close-btn" onclick="toggleMenu()">✕</button>
     </div>
-
-    <!-- Dark Mode Switch -->
     <div class="theme-switch-wrapper">
-        <span class="theme-switch-label">Koyu Tema</span>
+        <span class="theme-switch-label">Tema</span>
         <label class="switch">
             <input type="checkbox" id="themeToggle" onchange="switchTheme(this.checked)">
             <span class="slider"></span>
         </label>
     </div>
-
-    <!-- Son 10 İşlem -->
     <div class="history-section">
         <div class="history-title-row">
             <h4>Son 10 İşlem</h4>
             <button class="clear-btn" onclick="clearHistory()">Temizle</button>
         </div>
         <div id="historyList" class="history-list">
-            <!-- Geçmiş verileri buraya yüklenecek -->
         </div>
     </div>
 </div>
 
 <script>
-    // Sayfa Yüklendiğinde Ayarları Getir
     document.addEventListener("DOMContentLoaded", () => {
         const savedTheme = localStorage.getItem("appTheme") || "light";
         if (savedTheme === "dark") {
@@ -499,25 +464,19 @@
         }
         renderHistory();
     });
-
-    // Mod Değiştirme (Fiyat Analizi <-> Simülatör <-> Steam)
     function switchMode(mode) {
         const btnAnalysis = document.getElementById('modeAnalysis');
         const btnSimulator = document.getElementById('modeSimulator');
         const btnSteam = document.getElementById('modeSteam');
-        
         const viewAnalysis = document.getElementById('analysisView');
         const viewSimulator = document.getElementById('simulatorView');
         const viewSteam = document.getElementById('steamView');
-
         btnAnalysis.classList.remove('active');
         btnSimulator.classList.remove('active');
         btnSteam.classList.remove('active');
-
         viewAnalysis.style.display = 'none';
         viewSimulator.style.display = 'none';
         viewSteam.style.display = 'none';
-
         if (mode === 'analysis') {
             btnAnalysis.classList.add('active');
             viewAnalysis.style.display = 'block';
@@ -529,34 +488,26 @@
             viewSteam.style.display = 'block';
         }
     }
-
-    // FİYAT ANALİZİ HESAPLAMA (Otomatik)
     function hesaplaFiyatAnalizi() {
         const alis = parseFloat(document.getElementById('faAlis').value);
         const satis = parseFloat(document.getElementById('faSatis').value);
         const detailsDiv = document.getElementById('faDetails');
-
         if (isNaN(alis) || isNaN(satis) || alis <= 0 || satis <= 0) {
             detailsDiv.style.display = 'none';
             return;
         }
-
         const satisKurus = Math.round(satis * 100);
         const dilimSayisi = Math.ceil(satisKurus / 50);
         const kesinti = dilimSayisi * 0.01;
         const netSatis = satis - kesinti;
-        
         const fark = netSatis - alis;
         const yuzde = (fark / alis) * 100;
-
         document.getElementById('faKesinti').innerText = "-" + kesinti.toFixed(2) + " TL";
         document.getElementById('faNetSatis').innerText = netSatis.toFixed(2) + " TL";
-
         const resBox = document.getElementById('faResultBox');
         const resTitle = document.getElementById('faResultTitle');
         const resVal = document.getElementById('faResultVal');
         const resPercent = document.getElementById('faResultPercent');
-
         if (fark >= 0) {
             resBox.className = "main-result-box res-success";
             resTitle.innerText = "KÂR";
@@ -578,18 +529,11 @@
         detailsDiv.style.display = 'block';
         resBox.style.display = 'block';
     }
-
-    // STEAM GERÇEK KESİNTİ HESAPLAMA ALGORİTMASI (Valve Fee %5 + Game Fee %10, Kuruş Bazlı)
     function calculateSteamRecv(grossAmount) {
         if (grossAmount <= 0) return 0;
         let grossInCents = Math.round(grossAmount * 100);
-        
         if (grossInCents <= 1) return 1;
-
-        // Bize geçecek tahmini net kuruş tutarı
         let payInCents = Math.max(1, Math.floor(grossInCents / 1.15));
-
-        // Steam algoritmik düzeltme döngüsü
         while (true) {
             let steamFee = Math.max(1, Math.floor(payInCents * 0.05));
             let gameFee = Math.max(1, Math.floor(payInCents * 0.10));
@@ -611,8 +555,6 @@
         }
         return payInCents / 100;
     }
-
-    // STEAM HESAPLAMA (Otomatik)
     function hesaplaSteam() {
         const alisVal = document.getElementById('steamAlis').value;
         const satisVal = document.getElementById('steamSatis').value;
@@ -636,8 +578,6 @@
         const resTitle = document.getElementById('steamResultTitle');
         const resVal = document.getElementById('steamResultVal');
         const resPercent = document.getElementById('steamResultPercent');
-
-        // Alış fiyatı girildiyse Kâr/Zarar göster
         if (!isNaN(alis)) {
             const netSonuc = hesabaGecen - alis;
             
@@ -677,14 +617,10 @@
 
         detailsDiv.style.display = 'block';
     }
-
-    // Menü Aç/Kapat
     function toggleMenu() {
         document.getElementById("drawer").classList.toggle("active");
         document.getElementById("overlay").classList.toggle("active");
     }
-
-    // Tema Değiştirme
     function switchTheme(isDark) {
         if (isDark) {
             document.documentElement.setAttribute("data-theme", "dark");
@@ -694,8 +630,6 @@
             localStorage.setItem("appTheme", "light");
         }
     }
-
-    // Simülatör Hesaplama Fonksiyonu
     function hesapla() {
         const para = parseFloat(document.getElementById('para').value) || 0;
         const zarar = parseFloat(document.getElementById('zarar').value) || 0;
@@ -727,8 +661,6 @@
         }
 
         document.getElementById('resultBox').style.display = "block";
-
-        // Geçmişe Kaydet
         saveToHistory({
             para, zarar, alis, satis,
             toplamKazanc: toplamKazanc.toFixed(2),
@@ -736,8 +668,6 @@
             date: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
         });
     }
-
-    // Geçmişe Kaydetme Fonksiyonu
     function saveToHistory(item) {
         let history = JSON.parse(localStorage.getItem("calcHistory")) || [];
         history.unshift(item); // En başa ekle
@@ -745,8 +675,6 @@
         localStorage.setItem("calcHistory", JSON.stringify(history));
         renderHistory();
     }
-
-    // Geçmişi Listeleme
     function renderHistory() {
         const historyList = document.getElementById("historyList");
         const history = JSON.parse(localStorage.getItem("calcHistory")) || [];
@@ -771,8 +699,6 @@
             `;
         }).join('');
     }
-
-    // Geçmişi Temizle
     function clearHistory() {
         localStorage.removeItem("calcHistory");
         renderHistory();
