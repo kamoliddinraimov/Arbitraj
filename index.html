@@ -375,7 +375,7 @@
         <div id="faDetails" style="display: none;">
             <div class="analysis-card">
                 <div class="analysis-row">
-                    <span class="analysis-label">%2 Kesinti:</span>
+                    <span class="analysis-label">Kesinti:</span>
                     <span class="analysis-value" id="faKesinti" style="color: #ff3b30;">-0.00 TL</span>
                 </div>
                 <div class="analysis-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color);">
@@ -498,8 +498,12 @@
             return;
         }
 
-        const kesinti = satis * 0.02;
-        const netSatis = satis * 0.98;
+        // Floating point sapmalarını önlemek için kuruştan (tam sayı) hesaplıyoruz
+        const satisKurus = Math.round(satis * 100);
+        const dilimSayisi = Math.ceil(satisKurus / 50);
+        const kesinti = dilimSayisi * 0.01;
+        const netSatis = satis - kesinti;
+        
         const fark = netSatis - alis;
         const yuzde = (fark / alis) * 100;
 
