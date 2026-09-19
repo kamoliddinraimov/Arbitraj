@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Hesaplayıcı">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/calculator--v1.png">
+    <title>Zarar & Kâr Simülatörü</title>
+    <style>
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f2f2f7; margin: 0; padding: 20px; color: #1c1c1e; display: flex; justify-content: center; }
+        .container { background: white; padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h2 { text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 22px; }
+        .input-group { margin-bottom: 16px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #3a3a3c; }
+        input { width: 100%; padding: 12px; border: 1px solid #c7c7cc; border-radius: 10px; font-size: 16px; outline: none; background: #fafafa; }
+        input:focus { border-color: #007aff; background: #fff; }
+        button { width: 100%; padding: 14px; background-color: #007aff; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        button:active { background-color: #0056b3; }
+        .result { margin-top: 20px; padding: 16px; border-radius: 10px; background: #f8f9fa; border: 1px solid #e5e5ea; display: none; }
+        .result p { margin: 8px 0; font-size: 15px; }
+        .success { color: #34c759; font-weight: bold; }
+        .danger { color: #ff3b30; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>📊 Arbitraj Simülatörü</h2>
+    <div class="input-group">
+        <label>Başlangıç Parası (TL)</label>
+        <input type="number" id="para" value="100">
+    </div>
+    <div class="input-group">
+        <label>Zarar Oranı (%)</label>
+        <input type="number" id="zarar" value="30">
+    </div>
+    <div class="input-group">
+        <label>Ürün Alış Fiyatı (TL)</label>
+        <input type="number" id="alis" value="5">
+    </div>
+    <div class="input-group">
+        <label>Ürün Satış Fiyatı (TL)</label>
+        <input type="number" id="satis" value="9">
+    </div>
+    <button onclick="hesapla()">Hesapla</button>
+    <div id="resultBox" class="result">
+        <p id="resKalan"></p>
+        <p id="resUrun"></p>
+        <p id="resToplam"></p>
+        <hr style="border:0; border-top:1px solid #e5e5ea; margin: 10px 0;">
+        <p id="resNet"></p>
+    </div>
+</div>
+<script>
+    function hesapla() {
+        const para = parseFloat(document.getElementById('para').value) || 0;
+        const zarar = parseFloat(document.getElementById('zarar').value) || 0;
+        const alis = parseFloat(document.getElementById('alis').value) || 0;
+        const satis = parseFloat(document.getElementById('satis').value) || 0;
+
+        if (alis <= 0) {
+            alert("Alış fiyatı 0'dan büyük olmalıdır!");
+            return;
+        }
+
+        const kalan = para * (1 - zarar / 100);
+        const urunAdedi = Math.floor(kalan / alis);
+        const artanPara = kalan % alis;
+        const toplamKazanc = (urunAdedi * satis) + artanPara;
+        const netKar = toplamKazanc - para;
+
+        document.getElementById('resKalan').innerText = "📉 Kalan Para: " + kalan.toFixed(2) + " TL";
+        document.getElementById('resUrun').innerText = "📦 Alınan Ürün: " + urunAdedi + " adet";
+        document.getElementById('resToplam').innerText = "💰 Son Toplam Para: " + toplamKazanc.toFixed(2) + " TL";
+        
+        const netElem = document.getElementById('resNet');
+        if (netKar >= 0) {
+            netElem.className = "success";
+            netElem.innerText = "📈 Net Kâr: +" + netKar.toFixed(2) + " TL";
+        } else {
+            netElem.className = "danger";
+            netElem.innerText = "📉 Net Zarar: " + netKar.toFixed(2) + " TL";
+        }
+
+        document.getElementById('resultBox').style.display = "block";
+    }
+</script>
+
+</body>        
+</html>
