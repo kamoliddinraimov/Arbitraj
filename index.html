@@ -92,7 +92,7 @@
 
         h2 { text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 20px; padding-right: 30px; }
 
-        /* Mode Segmented Switch (iOS Style) */
+        /* Mode Segmented Switch (iOS Style - 3 Opsiyonlu) */
         .mode-switch-container {
             display: flex;
             background-color: var(--switch-bg);
@@ -105,13 +105,13 @@
             flex: 1;
             text-align: center;
             padding: 8px 0;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--sub-text);
             cursor: pointer;
             z-index: 1;
             border-radius: 8px;
-            transition: color 0.2s ease;
+            transition: color 0.2s ease, background-color 0.2s ease;
             user-select: none;
         }
         .mode-option.active {
@@ -161,7 +161,7 @@
         .success { color: #34c759; font-weight: bold; }
         .danger { color: #ff3b30; font-weight: bold; }
 
-        /* Fiyat Analizi Özel Kart Tasarımı */
+        /* Analiz & Steam Özel Kart Tasarımı */
         .analysis-card {
             background: var(--result-bg);
             border: 1px solid var(--result-border);
@@ -354,10 +354,11 @@
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
     <h2>📊 Ticaret Analizi</h2>
     
-    <!-- Mode Switcher -->
+    <!-- Mode Switcher (Üçlü Yapı) -->
     <div class="mode-switch-container">
         <div id="modeAnalysis" class="mode-option active" onclick="switchMode('analysis')">Fiyat Analizi</div>
         <div id="modeSimulator" class="mode-option" onclick="switchMode('simulator')">Simülatör</div>
+        <div id="modeSteam" class="mode-option" onclick="switchMode('steam')">Steam</div>
     </div>
 
     <!-- MOD 1: FİYAT ANALİZİ EKRANI -->
@@ -392,7 +393,7 @@
         </div>
     </div>
 
-    <!-- MOD 2: MEVCUT SİMÜLATÖR EKRANI -->
+    <!-- MOD 2: SİMÜLATÖR EKRANI -->
     <div id="simulatorView" style="display: none;">
         <div class="input-group">
             <label>Başlangıç Parası (TL)</label>
@@ -422,6 +423,38 @@
             <p id="resToplam"></p>
             <hr style="border:0; border-top:1px solid var(--result-border); margin: 10px 0;">
             <p id="resNet"></p>
+        </div>
+    </div>
+
+    <!-- MOD 3: STEAM EKRANI -->
+    <div id="steamView" style="display: none;">
+        <div class="input-group">
+            <label>Alış Fiyatım (TL)</label>
+            <input type="number" id="steamAlis" placeholder="0.00" step="any" oninput="hesaplaSteam()">
+        </div>
+        
+        <div class="input-group">
+            <label>Satış Fiyatım (TL)</label>
+            <input type="number" id="steamSatis" placeholder="0.00" step="any" oninput="hesaplaSteam()">
+        </div>
+
+        <div id="steamDetails" style="display: none;">
+            <div class="analysis-card">
+                <div class="analysis-row">
+                    <span class="analysis-label">Steam Kesintisi:</span>
+                    <span class="analysis-value" id="steamKesinti" style="color: #ff3b30;">0.00 TL</span>
+                </div>
+                <div class="analysis-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color);">
+                    <span class="analysis-label">Hesaba Geçecek:</span>
+                    <span class="analysis-value" id="steamNetSatis">0.00 TL</span>
+                </div>
+            </div>
+
+            <div id="steamResultBox" class="main-result-box">
+                <div id="steamResultTitle" class="main-result-title">KÂR</div>
+                <div id="steamResultVal" class="main-result-value">+0.00 TL</div>
+                <div id="steamResultPercent" class="main-result-percent">+0.00%</div>
+            </div>
         </div>
     </div>
 </div>
@@ -467,23 +500,33 @@
         renderHistory();
     });
 
-    // Mod Değiştirme (Fiyat Analizi <-> Simülatör)
+    // Mod Değiştirme (Fiyat Analizi <-> Simülatör <-> Steam)
     function switchMode(mode) {
         const btnAnalysis = document.getElementById('modeAnalysis');
         const btnSimulator = document.getElementById('modeSimulator');
+        const btnSteam = document.getElementById('modeSteam');
+        
         const viewAnalysis = document.getElementById('analysisView');
         const viewSimulator = document.getElementById('simulatorView');
+        const viewSteam = document.getElementById('steamView');
+
+        btnAnalysis.classList.remove('active');
+        btnSimulator.classList.remove('active');
+        btnSteam.classList.remove('active');
+
+        viewAnalysis.style.display = 'none';
+        viewSimulator.style.display = 'none';
+        viewSteam.style.display = 'none';
 
         if (mode === 'analysis') {
             btnAnalysis.classList.add('active');
-            btnSimulator.classList.remove('active');
             viewAnalysis.style.display = 'block';
-            viewSimulator.style.display = 'none';
-        } else {
+        } else if (mode === 'simulator') {
             btnSimulator.classList.add('active');
-            btnAnalysis.classList.remove('active');
             viewSimulator.style.display = 'block';
-            viewAnalysis.style.display = 'none';
+        } else if (mode === 'steam') {
+            btnSteam.classList.add('active');
+            viewSteam.style.display = 'block';
         }
     }
 
@@ -498,7 +541,6 @@
             return;
         }
 
-        // Floating point sapmalarını önlemek için kuruştan (tam sayı) hesaplıyoruz
         const satisKurus = Math.round(satis * 100);
         const dilimSayisi = Math.ceil(satisKurus / 50);
         const kesinti = dilimSayisi * 0.01;
@@ -537,6 +579,105 @@
         resBox.style.display = 'block';
     }
 
+    // STEAM GERÇEK KESİNTİ HESAPLAMA ALGORİTMASI (Valve Fee %5 + Game Fee %10, Kuruş Bazlı)
+    function calculateSteamRecv(grossAmount) {
+        if (grossAmount <= 0) return 0;
+        let grossInCents = Math.round(grossAmount * 100);
+        
+        if (grossInCents <= 1) return 1;
+
+        // Bize geçecek tahmini net kuruş tutarı
+        let payInCents = Math.max(1, Math.floor(grossInCents / 1.15));
+
+        // Steam algoritmik düzeltme döngüsü
+        while (true) {
+            let steamFee = Math.max(1, Math.floor(payInCents * 0.05));
+            let gameFee = Math.max(1, Math.floor(payInCents * 0.10));
+            let total = payInCents + steamFee + gameFee;
+
+            if (total <= grossInCents) {
+                if (grossInCents - total > 0) {
+                    let nextPay = payInCents + 1;
+                    let nextSteamFee = Math.max(1, Math.floor(nextPay * 0.05));
+                    let nextGameFee = Math.max(1, Math.floor(nextPay * 0.10));
+                    if (nextPay + nextSteamFee + nextGameFee <= grossInCents) {
+                        payInCents = nextPay;
+                        continue;
+                    }
+                }
+                break;
+            }
+            payInCents--;
+        }
+        return payInCents / 100;
+    }
+
+    // STEAM HESAPLAMA (Otomatik)
+    function hesaplaSteam() {
+        const alisVal = document.getElementById('steamAlis').value;
+        const satisVal = document.getElementById('steamSatis').value;
+        
+        const alis = parseFloat(alisVal);
+        const satis = parseFloat(satisVal);
+        const detailsDiv = document.getElementById('steamDetails');
+
+        if (isNaN(satis) || satis <= 0) {
+            detailsDiv.style.display = 'none';
+            return;
+        }
+
+        const hesabaGecen = calculateSteamRecv(satis);
+        const kesinti = satis - hesabaGecen;
+
+        document.getElementById('steamKesinti').innerText = kesinti.toFixed(2) + " TL";
+        document.getElementById('steamNetSatis').innerText = hesabaGecen.toFixed(2) + " TL";
+
+        const resBox = document.getElementById('steamResultBox');
+        const resTitle = document.getElementById('steamResultTitle');
+        const resVal = document.getElementById('steamResultVal');
+        const resPercent = document.getElementById('steamResultPercent');
+
+        // Alış fiyatı girildiyse Kâr/Zarar göster
+        if (!isNaN(alis)) {
+            const netSonuc = hesabaGecen - alis;
+            
+            if (netSonuc >= 0) {
+                resBox.className = "main-result-box res-success";
+                resTitle.innerText = "KÂR";
+                resTitle.style.color = "#34c759";
+                resVal.innerText = "+" + netSonuc.toFixed(2) + " TL";
+                resVal.style.color = "#34c759";
+                
+                if (alis > 0) {
+                    const yuzde = (netSonuc / alis) * 100;
+                    resPercent.innerText = "+" + yuzde.toFixed(2) + "%";
+                    resPercent.style.display = "block";
+                } else {
+                    resPercent.style.display = "none";
+                }
+            } else {
+                resBox.className = "main-result-box res-danger";
+                resTitle.innerText = "ZARAR";
+                resTitle.style.color = "#ff3b30";
+                resVal.innerText = netSonuc.toFixed(2) + " TL";
+                resVal.style.color = "#ff3b30";
+                
+                if (alis > 0) {
+                    const yuzde = (netSonuc / alis) * 100;
+                    resPercent.innerText = yuzde.toFixed(2) + "%";
+                    resPercent.style.display = "block";
+                } else {
+                    resPercent.style.display = "none";
+                }
+            }
+            resBox.style.display = "block";
+        } else {
+            resBox.style.display = "none";
+        }
+
+        detailsDiv.style.display = 'block';
+    }
+
     // Menü Aç/Kapat
     function toggleMenu() {
         document.getElementById("drawer").classList.toggle("active");
@@ -554,7 +695,7 @@
         }
     }
 
-    // Mevcut Simülatör Hesaplama Fonksiyonu
+    // Simülatör Hesaplama Fonksiyonu
     function hesapla() {
         const para = parseFloat(document.getElementById('para').value) || 0;
         const zarar = parseFloat(document.getElementById('zarar').value) || 0;
